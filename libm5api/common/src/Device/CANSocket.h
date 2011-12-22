@@ -41,25 +41,33 @@
 //#include <Neobotix/Utilities/IniFile.h>
 //#include <cob_forcetorque/Mutex.h>
 
-
+#include "../Device/ProtocolDevice.h"
 
 
 //-----------------------------------------------
 
-class CANSocket : public CanItf
+class CANSocket : public CProtocolDevice
 {
 public:
 	// --------------- Interface
 	CANSocket();//const char* cIniFile);
 	~CANSocket();
-	void init();
+	//void initintern();
 	void destroy() {};
-	bool transmitMsg(CanMsg CMsg, bool bBlocking = true);
-	bool receiveMsg(CanMsg* pCMsg);
+	//bool transmitMsg(CanMsg CMsg, bool bBlocking = true);
+	//bool receiveMsg(CanMsg* pCMsg);
 	bool receiveMsgRetry(CanMsg* pCMsg, int iNrOfRetry);
 	bool isObjectMode() { return false; }
+	int init();
+	int init(unsigned long baudRate);
+	int init(const char* acInitString);
+	int exit();
+	int waitForStartMotionAll();
+	void setQueueSize(unsigned short uiQueueSize);
+	void setTimeOut(unsigned long uiTimeOut);
 
-private:
+
+protected:
 	// --------------- Types
 	//HANDLE m_skt;
 	
@@ -72,7 +80,22 @@ private:
 	static const int c_iInterrupt;
 	static const int c_iPort;
 	void initIntern();
+	int m_hDevice;
+	int m_hSyncDevice;
+	int m_iDeviceId;
+	unsigned long  m_uiBaudRate;	
+	unsigned short m_uiQueueSize;
+	unsigned long m_uiTimeOut;
+	int getDeviceError(int iErrorState);
+	int setBaudRate();
+	int setBaudRate(unsigned char iBaudRate);
+	int setMessageId(unsigned long uiMessageId);
+	int clearReadQueue();
+	int reinit(unsigned char ucBaudRateId);
+	int readDevice(CProtocolMessage& rclProtocolMessage);
+	int writeDevice(CProtocolMessage& rclProtocolMessage);
+	int m_iNoOfRetries;
+	char * m_DeviceName;
 };
 //-----------------------------------------------
 #endif
-
