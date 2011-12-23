@@ -3,7 +3,7 @@
 // www.neobotix.de
 // Copyright (c) 2003. All rights reserved.
 
-// author: Oliver Barth
+// author: Oliver Barth, Christian Büsch
 //-----------------------------------------------
 #include "CANSocket.h"
 
@@ -14,22 +14,19 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-// #define DEBUG 1
+#define DEBUG 1
 
-//#include "Neobotix/Compat.h"
 
 
 struct can_frame frame;
 
-//-----------------------------------------------
-CANSocket::CANSocket() : m_hDevice(0), m_hSyncDevice(0), m_iDeviceId(-1), m_uiBaudRate(0), m_uiQueueSize(128), m_uiTimeOut(3)		// ESD C331 //const char* cIniFile)
-{
-	initMessage("CANSocket", g_iDebugLevel, g_bDebug, g_bDebugFile);
-	m_DeviceName = (char*) malloc(200 * sizeof(char));
-	memset(m_DeviceName,0,sizeof(m_DeviceName));
-	m_bInitialized = false;
 
+//-----------------------------------------------
+CANSocket::CANSocket() 
+{
+	m_bInitialized = false;
 }
+
 
 //-----------------------------------------------
 CANSocket::~CANSocket()
@@ -39,21 +36,26 @@ CANSocket::~CANSocket()
 		//CAN_Close(m_handle);
 	}
 }
+
+
+//-----------------------------------------------
 int CANSocket::init()
 {
 return init(0x014);//CAN_BAUD_250K);
 }
+
+
 //-----------------------------------------------
 int CANSocket::init(const char* acInitString)
 {
-#ifdef DEBUG
+	#ifdef DEBUG
 	std::cout << "Trying to open CAN on can0 ...\n"<< std::endl;
-#endif
+	#endif
 	
 	m_skt = socket( PF_CAN, SOCK_RAW, CAN_RAW );
 	struct ifreq ifr;
 	strcpy(ifr.ifr_name, "can0");
-	int ret = ioctl(m_skt, SIOCGIFINDEX, &ifr); /* ifr.ifr_ifindex gets filled with that device's index */
+	int ret = ioctl(m_skt, SIOCGIFINDEX, &ifr);
 	struct sockaddr_can addr;
 	addr.can_family = AF_CAN;
 	addr.can_ifindex = ifr.ifr_ifindex;
@@ -100,9 +102,11 @@ int CANSocket::writeDevice(CProtocolMessage& rclProtocolMessage)
 #endif
 	
 	int bytes_sent =-1;
-#ifdef DEBUG
+	
+#ifdef DEBUG	
 	std::cout << "m_skt " << m_skt << std::endl;
-#endif	
+#endif
+
 	if (m_bInitialized == false) return false;
 	
 	frame.can_dlc = (int)rclProtocolMessage.m_ucMessageLength;
@@ -196,9 +200,6 @@ int CANSocket::readDevice(CProtocolMessage& rclProtocolMessage)
 	std::cerr << "sizeof(frame)" << sizeof(frame) << std::endl;
 #endif
 	
-	
-	if( !isObjectMode() ) 
-	{
 		if (bytes_read > 0)  // no problem occured
 		{
 			
@@ -224,7 +225,6 @@ int CANSocket::readDevice(CProtocolMessage& rclProtocolMessage)
 			std::cout << "error in CanSocket::receiveMsg: " << std::endl;//GetErrorStr(ret) << std::endl;
 			bRet = 1;
 		}
-	}
 
 #ifdef DEBUG
 	std::cout << "bRet before return from CANSocket::readDevice: " << bRet << std::endl;
@@ -301,13 +301,13 @@ int CANSocket::waitForStartMotionAll()
 
 void CANSocket::setQueueSize(unsigned short uiQueueSize)
 {
-	m_uiQueueSize = uiQueueSize;
+	//m_uiQueueSize = uiQueueSize;
 }
 
 
 void CANSocket::setTimeOut(unsigned long uiTimeOut)
 {
-	m_uiTimeOut= uiTimeOut;
+	//m_uiTimeOut= uiTimeOut;
 }
 
 int CANSocket::getDeviceError(int iErrorState)
@@ -318,7 +318,7 @@ int CANSocket::getDeviceError(int iErrorState)
 
 int CANSocket::setBaudRate(unsigned char iBaudRate)
 {
-	m_uiBaudRate = (unsigned long) iBaudRate;
+	//m_uiBaudRate = (unsigned long) iBaudRate;
 	return setBaudRate();
 }
 
@@ -339,8 +339,6 @@ int CANSocket::setMessageId(unsigned long uiMessageId)
 
 int CANSocket::clearReadQueue()
 {
-	can_frame frame;
-    frame.can_dlc = 8;
-	frame.can_id = 0;
+	
 	return m_iErrorState;
 }

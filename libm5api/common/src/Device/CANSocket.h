@@ -8,9 +8,7 @@
 #ifndef CANSOCKET_INCLUDEDEF_H
 #define CANSOCKET_INCLUDEDEF_H
 //-----------------------------------------------
-//#include <Neobotix/Drivers/Can/CanItf.h>
-//#include <libpcan.h>
-//#include <Neobotix/Utilities/IniFile.h>
+
 #include "CanItf.h"
 
 #include <sys/types.h>
@@ -22,7 +20,6 @@
 #include <linux/can/raw.h>
 #include <string.h>
  
-/* At time of writing, these constants are not defined in the headers */
 #ifndef PF_CAN
 #define PF_CAN 29
 #endif
@@ -32,15 +29,10 @@
 #endif
 
 //-----------------------------------------------
-//#include <windows.h>
+
 #include <iostream>
 #include <cstdio>
 #include <errno.h>
-//#include <cob_forcetorque/CanItf.h>
-//#include <libntcan/ntcan.h>
-//#include <Neobotix/Utilities/IniFile.h>
-//#include <cob_forcetorque/Mutex.h>
-
 #include "../Device/ProtocolDevice.h"
 
 
@@ -50,14 +42,11 @@ class CANSocket : public CProtocolDevice
 {
 public:
 	// --------------- Interface
-	CANSocket();//const char* cIniFile);
+	CANSocket();
 	~CANSocket();
-	//void initintern();
-	void destroy() {};
-	//bool transmitMsg(CanMsg CMsg, bool bBlocking = true);
-	//bool receiveMsg(CanMsg* pCMsg);
+	//void destroy() {};
 	bool receiveMsgRetry(CanMsg* pCMsg, int iNrOfRetry);
-	bool isObjectMode() { return false; }
+	//bool isObjectMode() { return false; }
 	int init();
 	int init(unsigned long baudRate);
 	int init(const char* acInitString);
@@ -69,23 +58,20 @@ public:
 
 protected:
 	// --------------- Types
-	//HANDLE m_skt;
-	
 	bool m_bInitialized;
-	//IniFile m_IniFile;
 	bool m_bSimuEnabled;
 	int m_skt;
-	bool m_bIsTXError;
-	int m_LastID;
-	static const int c_iInterrupt;
-	static const int c_iPort;
-	void initIntern();
-	int m_hDevice;
-	int m_hSyncDevice;
-	int m_iDeviceId;
-	unsigned long  m_uiBaudRate;	
-	unsigned short m_uiQueueSize;
-	unsigned long m_uiTimeOut;
+	//bool m_bIsTXError;
+	//int m_LastID;
+	//static const int c_iInterrupt;
+	//static const int c_iPort;
+	//void initIntern();
+	//int m_hDevice;
+	//int m_hSyncDevice;
+	//int m_iDeviceId;
+	//unsigned long  m_uiBaudRate;	
+	//unsigned short m_uiQueueSize;
+	//unsigned long m_uiTimeOut;
 	int getDeviceError(int iErrorState);
 	int setBaudRate();
 	int setBaudRate(unsigned char iBaudRate);
@@ -95,7 +81,7 @@ protected:
 	int readDevice(CProtocolMessage& rclProtocolMessage);
 	int writeDevice(CProtocolMessage& rclProtocolMessage);
 	int m_iNoOfRetries;
-	char * m_DeviceName;
+	//char * m_DeviceName;
 };
 //-----------------------------------------------
 #endif
